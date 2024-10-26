@@ -89,14 +89,18 @@ void handle_updates(int fd, bool ActionButton_0, bool ActionButton_1, int value,
         sync_events(fd);
 
     }
+    else if(ActionButton_0 && (axis == 0)){
+        send_axis_event(fd, axis, value);
+        sync_events(fd);
+    }
+    else if(!ActionButton_0 && (axis == 0)){
+        return;
+    }
     else {
         send_axis_event(fd, axis, value);
         sync_events(fd);
-
     }
-    
 }
-
 
 int main() {
     const char *device = "/dev/input/js0"; 
@@ -155,6 +159,10 @@ int main() {
                         ActionButton_0 = true;
                     }else {
                         ActionButton_0 = false;
+                         send_axis_event(fd, 0, 0);
+        		 sync_events(fd);
+        		 send_axis_event(fd, 1, 0);
+        		 sync_events(fd);
                     }
                 }else {
                     if (jse.value == 1 ) {
